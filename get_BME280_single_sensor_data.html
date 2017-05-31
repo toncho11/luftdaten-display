@@ -27,18 +27,23 @@
 			
 			var sensor_name = $('#sensorTxt').val();
 			var days_back = $('#daysBeforeTxt').val();
-			var is_pm_10 = $("#radioPM10").is(":checked");
+			var is_TempChecked = $("#radioTemperature").is(":checked");
+			var is_HumidityChecked = $("#radioHumidity").is(":checked");
+			var is_PressureChecked = $("#radioPressure").is(":checked");
 
-			if (is_pm_10) legend_left = "PM 10"; else legend_left = "PM 2.5";
+			if (is_TempChecked) legend_left = "Temeprature"; 
+			else if (is_HumidityChecked) legend_left = "Humidity"; 
+			else if (is_PressureChecked) legend_left = "Air pressure"; 
 			
 			//get files
+			//http://archive.luftdaten.info/2017-05-26/2017-05-26_bme280_sensor_2607.csv
 			var response = "";
 			var j= days_back;
 			for(i=0; i< days_back; i++)
 			{
 			   var file_date = (moment().subtract(j, 'days')).format("YYYY-MM-DD");
 			   console.log(file_date);
-			   var current_response = getRemote("http://archive.luftdaten.info/" + file_date + "/" + file_date + "_sds011_sensor_" + sensor_name + ".csv");
+			   var current_response = getRemote("http://archive.luftdaten.info/" + file_date + "/" + file_date + "_bme280_sensor_" + sensor_name + ".csv");
 			   if (current_response != undefined) //to avoid missing dates
 					response = response + current_response;
 			   j = j - 1;
@@ -61,7 +66,9 @@
 				var newDate = Date.parse(datetime);
 				
 				var visits;
-				if (is_pm_10) visits = parseFloat(items[6]); else visits = parseFloat(items[9]);
+				if (is_TempChecked) visits = parseFloat(items[9]);
+				else if (is_HumidityChecked) visits = parseFloat(items[10]);
+				else if (is_PressureChecked) visits = parseFloat(items[6]);
 
 				chartData.push({
 					date: newDate,
@@ -119,13 +126,13 @@
 	}); //ready			
 			
 			
-			function getRemote(remote_url) {
-				return $.ajax({
-					type: "GET",
-					url: remote_url,
-					async: false //on purpose, because we can not continue until all files are downloaded
-				}).responseText;
-			}
+	function getRemote(remote_url) {
+		return $.ajax({
+			type: "GET",
+			url: remote_url,
+			async: false //on purpose, because we can not continue until all files are downloaded
+		}).responseText;
+	}
 
         </script>
     </head>
@@ -133,10 +140,11 @@
     <body>
 	    <table style="width: 100%;">
 		  <tr align="left">
-		      <td>SDS011 sensor map ID: <input name="sensorTxt" type="text" maxlength="8" id="sensorTxt" value="227" /></td>
+		      <td>BME280 sensor map ID: <input name="sensorTxt" type="text" maxlength="8" id="sensorTxt" value="2607" /></td>
 			  <td>For the last: <input name="daysBeforeTxt" type="text" maxlength="8" id="daysBeforeTxt" value="3"/> days</td>
-			  <td> PM 10 <input type="radio" name="group1" id="radioPM10" value="pm10">
-				   PM 2.5 <input type="radio" name="group1" id="radioPM25" value="pm25" checked="checked">
+			  <td> Temperature <input type="radio" name="group1" id="radioTemperature" checked="checked"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				   Humidity <input type="radio" name="group1" id="radioHumidity" > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				   Air pressure <input type="radio" name="group1" id="radioPressure" >
 			  </td> 
 			  <td><button type="button">Process</button></td>
 		  </tr>

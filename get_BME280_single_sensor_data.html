@@ -26,10 +26,11 @@
 			var legend_left="";
 			
 			var sensor_name = $('#sensorTxt').val();
-			var days_back = $('#daysBeforeTxt').val();
+			var days_back = parseInt($('#daysBeforeTxt').val());
 			var is_TempChecked = $("#radioTemperature").is(":checked");
 			var is_HumidityChecked = $("#radioHumidity").is(":checked");
 			var is_PressureChecked = $("#radioPressure").is(":checked");
+			var time_zone_shift = parseInt($('#sensorTimeZone').val());
 
 			if (is_TempChecked) legend_left = "Temeprature"; 
 			else if (is_HumidityChecked) legend_left = "Humidity"; 
@@ -63,7 +64,13 @@
 				var items = lines[i].split(';');
 				  
 				var datetime = items[5].replace("T"," ") + '.0';
-				var newDate = Date.parse(datetime);
+				//console.log("old " + moment(datetime).format('DD/MM/YYYY HH:mm:SS'));
+				
+				//adjust time zone
+				var shifted_datetime = moment(datetime).add(time_zone_shift, 'hours');
+				
+				var newDate = shifted_datetime;
+				//console.log("new " +moment(newDate).format('DD/MM/YYYY HH:mm:SS'));
 				
 				var visits;
 				if (is_TempChecked) visits = parseFloat(items[9]);
@@ -141,6 +148,7 @@
 	    <table style="width: 100%;">
 		  <tr align="left">
 		      <td>BME280 sensor map ID: <input name="sensorTxt" type="text" maxlength="8" id="sensorTxt" value="2607" /></td>
+			  <td>Sensor time zone: +<input name="sensorTimeZone" type="text" maxlength="8" id="sensorTimeZone" value="0" /></td>
 			  <td>For the last: <input name="daysBeforeTxt" type="text" maxlength="8" id="daysBeforeTxt" value="3"/> days</td>
 			  <td> Temperature <input type="radio" name="group1" id="radioTemperature" checked="checked"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				   Humidity <input type="radio" name="group1" id="radioHumidity" > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -149,7 +157,7 @@
 			  <td><button type="button">Process</button></td>
 		  </tr>
 		  <tr>
-			  <td colspan="4">
+			  <td colspan="5">
 			     <div id="chartdiv" style="width: 100%; height: 450px;"></div>
 			  </td>
 		  <tr>

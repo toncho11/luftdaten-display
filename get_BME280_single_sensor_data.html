@@ -44,7 +44,7 @@
 			{
 			   var file_date = (moment().subtract(j, 'days')).format("YYYY-MM-DD");
 			   console.log(file_date);
-			   var current_response = getRemote("http://archive.luftdaten.info/" + file_date + "/" + file_date + "_bme280_sensor_" + sensor_name + ".csv");
+			   var current_response = getRemote("https://archive.luftdaten.info/" + file_date + "/" + file_date + "_bme280_sensor_" + sensor_name + ".csv");
 			   if (current_response != undefined) //to avoid missing dates
 					response = response + current_response;
 			   j = j - 1;

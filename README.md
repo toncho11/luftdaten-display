@@ -1,5 +1,5 @@
 # luftdaten-display
-It is a web application that visualizes the data from http://archive.luftdaten.info. You can either host it on a web server or download and execute it locally on your computer. You can get a release here: https://github.com/toncho11/luftdaten-display/releases. Once downloaded unzip it and click on:
+It is a web application that visualizes the data from http://archive.luftdaten.info.
 
   * [get_SDS011_single_sensor_data.html](https://toncho11.github.io/luftdaten-display/get_SDS011_single_sensor_data.html) and fill the ID of your SDS011 sensor (PM 10 and PM 2.5)
   * [get_BME280_single_sensor_data.html](https://toncho11.github.io/luftdaten-display/get_BME280_single_sensor_data.html) and fill the ID of your BME280 sensor (Temperature, Humidity, Air pressure)

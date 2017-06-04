@@ -63,7 +63,7 @@
 					
 				var items = lines[i].split(';');
 				  
-				var datetime = items[5].replace("T"," ") + '.0';
+				var datetime = items[5].replace("T"," ") + '.0'; //UTC time must be set!
 				//console.log("old " + moment(datetime).format('DD/MM/YYYY HH:mm:SS'));
 				
 				//adjust time zone

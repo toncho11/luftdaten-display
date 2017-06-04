@@ -28,23 +28,27 @@
 			var legend_left="";
 			
 			var sensor_name = $('#sensorTxt').val();
-			var days_back = parseInt($('#daysBeforeTxt').val());
+			//var days_back = parseInt($('#daysBeforeTxt').val());
 			var is_pm_10 = $("#radioPM10").is(":checked");
 			var time_zone_shift = parseInt($('#sensorTimeZone').val());
 
 			if (is_pm_10) legend_left = "PM 10"; else legend_left = "PM 2.5";
+			var target_date = moment().format('YYYY-MM-DD');
 			
             //http://api.luftdaten.info/static/v1/data/data.json.2017-06-03-02-00
 		    
 			//get data =============================================================================================
 			var result = "";
 			var times = [];
-			for(h=0; h<=1; h++) //23
+			for(h=0; h<=17; h++)
+			//for(h=0; h<=23; h++)
+			//for(h=0; h<=1; h++)
 			{
 			    var hour = h;
 				if (hour <=9) hour = "0" + hour;
 				
 				for(m=0; m<=55; m=m+5)
+				//for(m=0; m<=10; m=m+5)
 				{
 				   var minute = m;
 				   if (minute <=9) minute = "0" + minute;
@@ -57,79 +61,109 @@
 			console.log("Files: " + times.length);
 			
 			var promises = times.map(function(id){
-			  var file = "http://api.luftdaten.info/static/v1/data/data.json.2017-06-01-" + id;
-			  console.log(file);
+			  var file = "http://api.luftdaten.info/static/v1/data/data.json." + target_date + "-" + id;
+			  //console.log(file);
 			  return jQuery.getJSON(file);
 			});
 
 			RSVP.all(promises).then(function(posts) {
 			  // posts contains an array of results for the given promises
-			  for(i=0; i< posts.length; i++)
+			  for(i=0; i < posts.length; i++)
 			  {
-			       result += posts[i];
+			       //result += posts[i];
 				   
 				   var arr = $.map(posts[i], function(el) { return el });
+				   //console.log("all lines: " + arr.length);
 
 				   var arrByID = filterItems(arr, sensor_name);
+				   //console.log("Lines filtered by id: " + arrByID.length);
 				   
-				   for (i = 0; i < arrByID.length; i++)
+				   //extract desired data
+				   for (j = 0; j < arrByID.length; j++)
 				   {
-					   var visits = arrByID[i].sensordatavalues[0].value;
-					   //fill data values
-					   console.log(visits);
+				       //console.log(arrByID[j].timestamp);
+					   
+				       var datetime = arrByID[j].timestamp; //UTC time must be set !!!
+					   var shifted_datetime = moment(datetime).add(time_zone_shift, 'hours');
+					   var newDate = shifted_datetime;
+					   
+					   //console.log(arrByID[j].sensordatavalues);
+					   if (arrByID[j].sensordatavalues != undefined)
+					   {
+						   if (is_pm_10) visits = parseFloat(arrByID[j].sensordatavalues[0].value); else 
+						   {
+								if (arrByID[j].sensordatavalues[1] != undefined)
+									visits = parseFloat(arrByID[j].sensordatavalues[1].value);
+						   }
+					
+						   chartData.push({
+								date: newDate,
+								value: visits
+						   });
+						}
+						else "Undefined values for PM10 and PM2.5 detected"
+					   
+					   //console.log(chartData);
+					   //console.log(chartData[chartData.length-1].newDate);
+					   //console.log(chartData[chartData.length-1].visits);
 				   }
 					
-				   //console.log(arrByID[0].sensor.id);
+				   //console.log(chartData.length);
 			  }
+			  
 			  console.log("done processing");
+			  
+			  console.log("Charting...");
+			
+				//show data =============================================================================================
+				var chart = AmCharts.makeChart("chartdiv", {
+					"type": "serial",
+					"theme": "light",
+					"marginRight": 80,
+					"dataProvider": chartData,
+					"valueAxes": [{
+						"position": "left",
+						"title": legend_left
+					}],
+					"graphs": [{
+						"id": "g1",
+						"fillAlphas": 0.4,
+						"valueField": "value",
+						 "balloonText": "<div style='margin:5px; font-size:19px;'>Value:<b>[[value]]</b></div>"
+					}],
+					"chartScrollbar": {
+						"graph": "g1",
+						"scrollbarHeight": 80,
+						"backgroundAlpha": 0,
+						"selectedBackgroundAlpha": 0.1,
+						"selectedBackgroundColor": "#888888",
+						"graphFillAlpha": 0,
+						"graphLineAlpha": 0.5,
+						"selectedGraphFillAlpha": 0,
+						"selectedGraphLineAlpha": 1,
+						"autoGridCount": true,
+						"color": "#AAAAAA"
+					},
+					"chartCursor": {
+						"categoryBalloonDateFormat": "JJ:NN, DD MMMM",
+						"cursorPosition": "mouse"
+					},
+					"categoryField": "date",
+					"categoryAxis": {
+						"minPeriod": "mm",
+						"parseDates": true
+					},
+					"export": {
+						"enabled": true,
+						 "dateFormat": "YYYY-MM-DD HH:NN:SS"
+					}
+				}); //end amChart creat
 			  
 			}).catch(function(reason){
 			  console.log("Promise json get data error: " + reason);
 			});
 			
-			//show data =============================================================================================
-			var chart = AmCharts.makeChart("chartdiv", {
-				"type": "serial",
-				"theme": "light",
-				"marginRight": 80,
-				"dataProvider": chartData,
-				"valueAxes": [{
-					"position": "left",
-					"title": legend_left
-				}],
-				"graphs": [{
-					"id": "g1",
-					"fillAlphas": 0.4,
-					"valueField": "value",
-					 "balloonText": "<div style='margin:5px; font-size:19px;'>Value:<b>[[value]]</b></div>"
-				}],
-				"chartScrollbar": {
-					"graph": "g1",
-					"scrollbarHeight": 80,
-					"backgroundAlpha": 0,
-					"selectedBackgroundAlpha": 0.1,
-					"selectedBackgroundColor": "#888888",
-					"graphFillAlpha": 0,
-					"graphLineAlpha": 0.5,
-					"selectedGraphFillAlpha": 0,
-					"selectedGraphLineAlpha": 1,
-					"autoGridCount": true,
-					"color": "#AAAAAA"
-				},
-				"chartCursor": {
-					"categoryBalloonDateFormat": "JJ:NN, DD MMMM",
-					"cursorPosition": "mouse"
-				},
-				"categoryField": "date",
-				"categoryAxis": {
-					"minPeriod": "mm",
-					"parseDates": true
-				},
-				"export": {
-					"enabled": true,
-					 "dateFormat": "YYYY-MM-DD HH:NN:SS"
-				}
-			}); //end amChart creat
+			
 			
 	   }); //button click
 	}); //ready			
@@ -149,7 +183,7 @@
 			
 			function filterItems(arr, query) {
 			  return arr.filter(function(el) {
-				  return el.sensor.id = query;
+				  return el.sensor.id == query;
 			})
 			};
 
@@ -169,14 +203,14 @@
 		  <tr align="left">
 		      <td>SDS011 sensor map ID: <input name="sensorTxt" type="text" maxlength="8" id="sensorTxt" value="227" /></td>
 			  <td>Sensor time zone: +<input name="sensorTimeZone" type="text" maxlength="8" id="sensorTimeZone" value="0" /></td>
-			  <td>For the last: <input name="daysBeforeTxt" type="text" maxlength="8" id="daysBeforeTxt" value="3"/> days</td>
+			  <!-- <td>For the last: <input name="daysBeforeTxt" type="text" maxlength="8" id="daysBeforeTxt" value="3"/> days</td> -->
 			  <td> PM 10 <input type="radio" name="group1" id="radioPM10" value="pm10">
 				   PM 2.5 <input type="radio" name="group1" id="radioPM25" value="pm25" checked="checked">
 			  </td> 
 			  <td><button type="button">Process</button></td>
 		  </tr>
 		  <tr>
-			  <td colspan="5">
+			  <td colspan="4">
 			     <div id="chartdiv" style="width: 100%; height: 450px;"></div>
 			  </td>
 		  <tr>

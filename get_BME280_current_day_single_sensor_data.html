@@ -97,7 +97,7 @@
 					   var shifted_dt = dt_utc.utcOffset(time_zone_shift * 60); //get in utc but shift to specified timezone
 					   var newDate = shifted_dt;
 					   
-					   console.log(arrByID[j].sensordatavalues);
+					   //console.log(arrByID[j].sensordatavalues);
 					   if (arrByID[j].sensordatavalues != undefined)
 					   {
 						   var visits;
@@ -109,9 +109,9 @@
 					       }
 						   else //3 values available
 						   {
-							   if (is_TempChecked && arrByID[j].sensordatavalues[0].value_type=="temperature") visits = parseFloat(arrByID[j].sensordatavalues[0].value);
-							   else if (is_HumidityChecked && arrByID[j].sensordatavalues[1].value_type=="humidity") visits = parseFloat(arrByID[j].sensordatavalues[1].value);
-							   else if (is_PressureChecked && arrByID[j].sensordatavalues[2].value_type=="pressure") visits = parseFloat(arrByID[j].sensordatavalues[2].value);
+							   if (is_TempChecked && arrByID[j].sensordatavalues[0] != undefined && arrByID[j].sensordatavalues[0].value_type=="temperature") visits = parseFloat(arrByID[j].sensordatavalues[0].value);
+							   else if (is_HumidityChecked && arrByID[j].sensordatavalues[1] != undefined && arrByID[j].sensordatavalues[1].value_type=="humidity") visits = parseFloat(arrByID[j].sensordatavalues[1].value);
+							   else if (is_PressureChecked && arrByID[j].sensordatavalues[2] != undefined && arrByID[j].sensordatavalues[2].value_type=="pressure") visits = parseFloat(arrByID[j].sensordatavalues[2].value);
 						   }
 						   chartData.push({
 								date: newDate,

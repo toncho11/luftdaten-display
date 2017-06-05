@@ -73,7 +73,7 @@
 			console.log("Files: " + times.length);
 			
 			var promises = times.map(function(id){
-			  var file = "http://api.luftdaten.info/static/v1/data/data.json." + target_date + "-" + id;
+			  var file = "https://api.luftdaten.info/static/v1/data/data.json." + target_date + "-" + id;
 			  //console.log(file);
 			  return jQuery.getJSON(file);
 			});

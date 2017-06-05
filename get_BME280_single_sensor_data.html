@@ -18,6 +18,9 @@
 		<script>
 
     $(document).ready(function(){
+	
+	    $('#sensorTimeZone').val((new Date()).getTimezoneOffset() / 60 * -1);
+	    
         $("button").click(function(){
 		
 		    var chart;
@@ -63,14 +66,15 @@
 					
 				var items = lines[i].split(';');
 				  
-				var datetime = items[5].replace("T"," ") + '.0'; //UTC time must be set!
-				//console.log("old " + moment(datetime).format('DD/MM/YYYY HH:mm:SS'));
+				//example in csv file: 2017-05-26T00:00:41;
+				var datetime = items[5].replace("T"," ");
+				var dt_utc = moment.utc(datetime);
+				console.log("dt_utc: " +dt_utc.format('DD/MM/YYYY HH:mm:SS'));
+				var shifted_dt = dt_utc.utcOffset(time_zone_shift * 60);		
 				
-				//adjust time zone
-				var shifted_datetime = moment(datetime).add(time_zone_shift, 'hours');
-				
-				var newDate = shifted_datetime;
-				//console.log("new " +moment(newDate).format('DD/MM/YYYY HH:mm:SS'));
+				var newDate = shifted_dt;
+				console.log("shifted: " +shifted_dt.format('DD/MM/YYYY HH:mm:SS'));
+				//console.log("=========================================================");
 				
 				var visits;
 				if (is_TempChecked) visits = parseFloat(items[9]);

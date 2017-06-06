@@ -14,6 +14,7 @@
 		<script src="./lib/amcharts/plugins/dataloader/dataloader.min.js" type="text/javascript"></script>
 		
 		<script src="https://momentjs.com/downloads/moment.js"></script>
+		<script src="./script/utils.js"></script>
 
 		<script>
 
@@ -34,6 +35,8 @@
 			var is_HumidityChecked = $("#radioHumidity").is(":checked");
 			var is_PressureChecked = $("#radioPressure").is(":checked");
 			var time_zone_shift = parseInt($('#sensorTimeZone').val());
+			
+			if (!validate(sensor_name)) {console.log("Input error detected");return;}
 
 			if (is_TempChecked) legend_left = "Temeprature"; 
 			else if (is_HumidityChecked) legend_left = "Humidity"; 
@@ -136,22 +139,13 @@
 	   }); //button click
 	}); //ready			
 			
-			
-	function getRemote(remote_url) {
-		return $.ajax({
-			type: "GET",
-			url: remote_url,
-			async: false //on purpose, because we can not continue until all files are downloaded
-		}).responseText;
-	}
-
         </script>
     </head>
 
     <body>
 	    <table style="width: 100%;">
 		  <tr align="left">
-		      <td>BME280 sensor map ID: <input name="sensorTxt" type="text" maxlength="8" id="sensorTxt" value="2607" /></td>
+		      <td>BME280 sensor map ID: <input name="sensorTxt" type="text" maxlength="8" id="sensorTxt" value="" /></td>
 			  <td>Sensor time zone: +<input name="sensorTimeZone" type="text" maxlength="8" id="sensorTimeZone" value="0" /></td>
 			  <td>For the last: <input name="daysBeforeTxt" type="text" maxlength="8" id="daysBeforeTxt" value="3"/> days</td>
 			  <td> Temperature <input type="radio" name="group1" id="radioTemperature" checked="checked"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -160,6 +154,11 @@
 			  </td> 
 			  <td><button type="button">Process</button></td>
 		  </tr>
+		  <tr align="left">
+		      <td colspan="4">
+			   Example id: 2607   
+			  </td>
+		  <tr>
 		  <tr>
 			  <td colspan="5">
 			     <div id="chartdiv" style="width: 100%; height: 450px;"></div>

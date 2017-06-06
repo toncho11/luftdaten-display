@@ -15,6 +15,7 @@
 		
 		<script src="https://momentjs.com/downloads/moment.js"></script>
 		<script src="./script/rsvp.js"></script>
+		<script src="./script/utils.js"></script>
 
 		<script>
 
@@ -38,6 +39,8 @@
 			//var days_back = parseInt($('#daysBeforeTxt').val());
 			var is_pm_10 = $("#radioPM10").is(":checked");
 			var time_zone_shift = parseInt($('#sensorTimeZone').val());
+			
+			if (!validate(sensor_name)) {console.log("Input error detected");return;}
 
 			if (is_pm_10) legend_left = "PM 10"; else legend_left = "PM 2.5";
 			var target_date = moment().format('YYYY-MM-DD');
@@ -180,41 +183,14 @@
 			
 	   }); //button click
 	}); //ready			
-			
-			
-			function getRemote(remote_url) {
-				return $.ajax({
-					type: "GET",
-					url: remote_url,
-					async: false //on purpose, because we can not continue until all files are downloaded
-				}).responseText;
-			}
-			
-			function isNumber(obj) {
-			  return obj!== undefined && typeof(obj) === 'number' && !isNaN(obj);
-			}
-			
-			function filterItems(arr, query) {
-			  return arr.filter(function(el) {
-				  return el.sensor.id == query;
-			})
-			};
-
-			function filterByID(item) {
-			  if (isNumber(item.id)) {
-				return true;
-			  } 
-			  //invalidEntries++;
-			  return false; 
-			}
-
+	
         </script>
     </head>
 
     <body>
 	    <table style="width: 100%;">
 		  <tr align="left">
-		      <td>SDS011 sensor map ID: <input name="sensorTxt" type="text" maxlength="8" id="sensorTxt" value="227" /></td>
+		      <td>SDS011 sensor map ID: <input name="sensorTxt" type="text" maxlength="8" id="sensorTxt" value="" /></td>
 			  <td>Sensor time zone: +<input name="sensorTimeZone" type="text" maxlength="8" id="sensorTimeZone" value="0" /></td>
 			  <!-- <td>For the last: <input name="daysBeforeTxt" type="text" maxlength="8" id="daysBeforeTxt" value="3"/> days</td> -->
 			  <td> PM 10 <input type="radio" name="group1" id="radioPM10" value="pm10">
@@ -222,6 +198,10 @@
 			  </td> 
 			  <td><button type="button">Process</button></td>
 		  </tr>
+		  <tr align="left">
+		      <td colspan="4">
+			   Example id: 227   
+			  </td>
 		  <tr>
 			  <td colspan="4">
 			     <div id="chartdiv" style="width: 100%; height: 450px;"></div>

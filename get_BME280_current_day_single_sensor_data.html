@@ -30,7 +30,7 @@
 			var legend_left="";
 			
 			var sensor_name = $('#sensorTxt').val();
-			var days_back = parseInt($('#daysBeforeTxt').val());
+			//var days_back = parseInt($('#daysBeforeTxt').val());
 			var is_TempChecked = $("#radioTemperature").is(":checked");
 			var is_HumidityChecked = $("#radioHumidity").is(":checked");
 			var is_PressureChecked = $("#radioPressure").is(":checked");
@@ -220,7 +220,7 @@
 		  <tr align="left">
 		      <td>BME280 sensor map ID: <input name="sensorTxt" type="text" maxlength="8" id="sensorTxt" value="2607" /></td>
 			  <td>Sensor time zone: +<input name="sensorTimeZone" type="text" maxlength="8" id="sensorTimeZone" value="0" /></td>
-			  <td>For the last: <input name="daysBeforeTxt" type="text" maxlength="8" id="daysBeforeTxt" value="3"/> days</td>
+			 <!--  <td>For the last: <input name="daysBeforeTxt" type="text" maxlength="8" id="daysBeforeTxt" value="3"/> days</td> -->
 			  <td> Temperature <input type="radio" name="group1" id="radioTemperature" checked="checked"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				   Humidity <input type="radio" name="group1" id="radioHumidity" > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				   Air pressure <input type="radio" name="group1" id="radioPressure" >
@@ -228,7 +228,7 @@
 			  <td><button type="button">Process</button></td>
 		  </tr>
 		  <tr>
-			  <td colspan="5">
+			  <td colspan="4">
 			     <div id="chartdiv" style="width: 100%; height: 450px;"></div>
 			  </td>
 		  <tr>

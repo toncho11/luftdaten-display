@@ -23,6 +23,10 @@
 	
 	    $('#sensorTimeZone').val((new Date()).getTimezoneOffset() / 60 * -1);
 	    
+		var sensor_name  = location.search.split('sensorname=')[1]; //?sensorname=2607
+		if (sensor_name != undefined)
+			$('#sensorTxt').val(sensor_name);
+			
         $("button").click(function(){
 		
 		    var chart;

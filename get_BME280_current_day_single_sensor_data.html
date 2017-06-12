@@ -46,8 +46,8 @@
 			if (is_TempChecked) legend_left = "Temeprature"; 
 			else if (is_HumidityChecked) legend_left = "Humidity"; 
 			else if (is_PressureChecked) legend_left = "Air pressure";
-			var target_date = moment().format('YYYY-MM-DD');
 			var current_dt_utc = moment.utc();
+			var target_date = current_dt_utc.format('YYYY-MM-DD');
 			
 			//get data =============================================================================================
 			var result = "";

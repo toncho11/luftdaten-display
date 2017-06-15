@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Title</title>
+    <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+	<script src="https://www.amcharts.com/lib/3/serial.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+	<style>
+	#chartdiv {
+	  width: 100%;
+	  height: 400px;
+	}
+	</style>
+	
+</head>
+<body>
+
+    <script>
+	  $(document).ready(function(){
+	  
+	        var days_back = 60;
+			
+			// generate random data
+			var sourceData = [];
+			var firstDate = new Date();
+			firstDate.setDate(firstDate.getDate() - days_back);
+			firstDate.setHours(0, 0, 0, 0);
+
+			for (var i = 0; i < days_back; i++) {
+			
+			  var newDate = new Date(firstDate);
+			  newDate.setDate(newDate.getDate() + i);
+			  
+			  var dataPoint = {
+				date: newDate
+			  }
+
+			  // generate value for each hour
+			  for (var h = 0; h <= 23; h++) {
+				dataPoint['value' + h] = Math.round(Math.random() * 4);
+			  }
+
+			  sourceData.push(dataPoint);
+			}
+
+			// now let's populate the source data with the colors based on the value
+			// as well as replace the original value with 1
+			
+			var colors = ['#FF0000', '#FF9100', '#F2FF00', '#9DFF00', '#00FF00'];
+			
+			for (i in sourceData) {
+			  for (var h = 0; h <= 23; h++) {
+				sourceData[i]['color' + h] = colors[sourceData[i]['value' + h]];
+				sourceData[i]['hour' + h] = 1;
+			  }
+			}
+
+			console.log(sourceData); //testing
+			//Now the sourceData contains 3 types of values: color0 ... color23, hour0 ... hour23, value0 ... value23 and the date
+			
+			// define graph objects for each hour
+			var graphs = [];
+			for (var h = 0; h <= 23; h++) {
+			  graphs.push({
+				"balloonText": "Original value: [[value" + h + "]]",
+				"fillAlphas": 1,
+				"lineAlpha": 0,
+				"type": "column",
+				"colorField": "color" + h,
+				"valueField": "hour" + h
+			  });
+			}
+
+			var chart = AmCharts.makeChart("chartdiv", {
+			  "type": "serial",
+			  "dataProvider": sourceData,
+			  "valueAxes": [{
+				"stackType": "regular",
+				"axisAlpha": 0.3,
+				"gridAlpha": 0,
+				"maximum": 24,
+				"duration": "mm",
+				"unit": ":00"
+			  }],
+			  "graphs": graphs, //data is provided here in the form of graphs
+			  "columnWidth": 1,
+			  "categoryField": "date",
+			  "categoryAxis": {
+				"parseDates": true,
+				"gridPosition": "start",
+				"axisAlpha": 0,
+				"gridAlpha": 0,
+				"position": "left"
+			  }
+			});
+	  })
+	  
+	</script>
+	
+	<div id="chartdiv"></div>   
+
+</body>
+</html>
+
+
+
+

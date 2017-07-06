@@ -49,6 +49,8 @@
 			var current_dt_utc = moment.utc();
 			var target_date = current_dt_utc.format('YYYY-MM-DD');
 			
+			document.getElementById("health").value = 0;
+			
 			//get data =============================================================================================
 			var result = "";
 			var times = [];
@@ -76,10 +78,12 @@
 			
 			console.log("Files: " + times.length);
 			
+			var dragonHealthStep = 100 / times.length;
+			
 			var promises = times.map(function(id){
 			  var file = "https://api.luftdaten.info/static/v1/data/data.json." + target_date + "-" + id;
 			  //console.log(file);
-			  return rsvpGetJSON(file) //rsvpGetJSON returns a promise and we can catch the error, catching it here prevents this calling promise from failing allows chart to be completed even if a file is missing 
+			  return rsvpGetJSON(file, dragonHealthStep) //rsvpGetJSON returns a promise and we can catch the error, catching it here prevents this calling promise from failing allows chart to be completed even if a file is missing 
 			  .catch(function(error) {
 				  console.log("Error downloading file: " + file);
 				}); 
@@ -201,6 +205,7 @@
     <body>
 	    <table style="width: 100%;">
 		  <tr><td><font color="orange">Building the chart might take up to 1 minute to construct!</font></td></tr>
+		  <tr><td><progress id="health" value="1" max="100"></progress></td></tr>
 		  <tr align="left">
 		      <td>BME280 sensor map ID: <input name="sensorTxt" type="text" maxlength="8" id="sensorTxt" value="" /></td>
 			  <td>Sensor time zone: +<input name="sensorTimeZone" type="text" maxlength="8" id="sensorTimeZone" value="0" /></td>

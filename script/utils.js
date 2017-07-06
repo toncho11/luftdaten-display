@@ -35,7 +35,7 @@ function filterByID(item) {
   return false; 
 }
 
-function rsvpGetJSON(url) {
+function rsvpGetJSON(url, progressBarStep) {
 	  var promise = new RSVP.Promise(function(resolve, reject){
 		var client = new XMLHttpRequest();
 		client.open("GET", url);
@@ -45,12 +45,16 @@ function rsvpGetJSON(url) {
 		client.send();
 
 		function handler() {
+		  
+		  
 		  if (this.readyState === this.DONE) {
-			if (this.status === 200) { resolve(this.response); }
+			if (this.status === 200) { document.getElementById("health").value += progressBarStep; resolve(this.response); }
 			else { reject(this); }
 		  }
 		};
 	  });
 
+	  
+	  
 	  return promise;
 	};

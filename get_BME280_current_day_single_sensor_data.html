@@ -205,22 +205,23 @@
     <body>
 	    <table style="width: 100%;">
 		  <tr><td><font color="orange">Building the chart might take up to 1 minute to construct!</font></td></tr>
-		  <tr><td><progress id="health" value="1" max="100"></progress></td></tr>
+
 		  <tr align="left">
-		      <td>BME280 sensor map ID: <input name="sensorTxt" type="text" maxlength="8" id="sensorTxt" value="" /></td>
+		      <td>BME280 sensor map ID: <input name="sensorTxt" type="text" maxlength="8" id="sensorTxt" value="" />  Example id: 2607   </td>
+		  </tr>
+		  <tr align="left">
 			  <td>Sensor time zone: +<input name="sensorTimeZone" type="text" maxlength="8" id="sensorTimeZone" value="0" /></td>
+		  </tr>
 			 <!--  <td>For the last: <input name="daysBeforeTxt" type="text" maxlength="8" id="daysBeforeTxt" value="3"/> days</td> -->
+			 <tr align="left">
 			  <td> Temperature <input type="radio" name="group1" id="radioTemperature" checked="checked"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				   Humidity <input type="radio" name="group1" id="radioHumidity" > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				   Air pressure <input type="radio" name="group1" id="radioPressure" >
 			  </td> 
-			  <td><button type="button">Process</button></td>
+			  </tr>
+			  <td><button type="button">Process</button> <progress id="health" value="1" max="100"></progress></td>
 		  </tr>
-		   <tr align="left">
-		      <td colspan="4">
-			   Example id: 2607   
-			  </td>
-		  <tr>
+
 		  <tr>
 			  <td colspan="4">
 			     <div id="chartdiv" style="width: 100%; height: 450px;"></div>
